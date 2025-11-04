@@ -34,8 +34,8 @@
 고객의 계약 상태, 이용 패턴, 서비스 품질, 요금 수준 등의 데이터를 분석하여
 이탈을 유발하는 주요 요인을 파악하고, ISP의 고객 유지 전략(Retention Strategy) 수립에 필요한 인사이트를 제공하는 것을 목표로 한다.
 ### 1.2. 목표
-- 이탈 고객(`Churn=1`) 과 유지 고객(`Churn=0`) 간의 특성 차이 분석
-- 계약 상태(Contract Type), 서비스 이용 연수(Subscription Age), 요금 수준(Bill Avg), 데이터 사용량(Download/Upload), 서비스 품질(Service Failure, Over Limit) 등의 요인이
+- 이탈 고객(`churn=1`) 과 유지 고객(`churn=0`) 간의 특성 차이 분석
+- 계약 상태(`contract_type`), 서비스 이용 연수(`subscription_age`), 요금 수준(`bill_avg`), 데이터 사용량(`Download/Upload_avg`), 서비스 품질(`service_failure_count`,`download_over_limit`) 등의 요인이
 이탈에 미치는 영향 파악
 - 통계적 검정 및 시각화를 통해 이탈에 유의미한 변수 도출
 - EDA를 통해 도출된 결과를 기반으로 머신러닝 및 딥러닝 수행 및 성능 비교
@@ -75,33 +75,33 @@
 
 본 프로젝트에서는 분석 목적과 모델 구조에 따라 데이터를 세 가지 형태로 구분하여 활용하였다.
 
-**EDA 및 트리 기반 모델**(Decision Tree, Random Forest, XGBoost 등) 에서는
+_EDA 및 트리 기반 모델_(Decision Tree, Random Forest, XGBoost 등) 에서는
 범주형 변수를 구간화·라벨링한 데이터를 사용하였다.
 트리 계열 모델은 범주형 피처를 직접 처리할 수 있으므로
 `contract_type`, `subscription_age_group`, `subscription_label`을
 라벨 인코딩(Label Encoding) 방식으로 변환하였다.
 
-**회귀 및 비트리 기반 모델**(Logistic Regression, SVM 등) 에서는
+_회귀 및 비트리 기반 모델_(Logistic Regression, SVM 등) 에서는
 모델이 연속형 입력에 민감하기 때문에,
 `subscription_age`는 연속형 변수로 유지하고,
 `contract_type`과 `subscription_label`은 원-핫 인코딩(one-hot encoding) 하였다.
 
 또한, 모델의 안정성과 예측 성능 향상을 위해
-`bill_avg`, `download_avg`, `upload_avg`에 대해 로그 변환(Log Transformation) 을 적용한 버전과
+`bill_avg`, `download_avg`, `upload_avg`에 대해 로그 변환을 적용한 버전과
 변환하지 않은 원본 버전 두 가지를 비교 실험하였다.
 이를 통해 로그 변환이 데이터의 분포 왜곡(skewness) 완화와 모델 성능 개선에 미치는 영향을 검증하였다.
 
 ---
 
 ## 3. EDA
-EDA 결과 **고객의 이탈(Churn)**은 **요금, 서비스 품질, 계약 상태, 구독 조합, 구독 연수**에 의해 명확히 구분되는 패턴을 보였다.
+EDA 결과 **고객의 이탈(`churn`)**은 **요금, 서비스 품질, 계약 상태, 구독 조합, 구독 연수**에 의해 명확히 구분되는 패턴을 보였다.
 
-- 요금(bill_avg): 낮을수록 이탈률 상승 → 저요금제 고객의 충성도 낮음
-- 데이터 사용량(download_avg, upload_avg): 낮을수록 이탈률 높음 → 사용률 낮은 고객은 서비스 몰입도 낮음
-- 서비스 품질(service_failure_count, download_over_limit): 불만(장애·초과)이 많을수록 churn 증가 → 품질 경험이 이탈의 직접 요인
-- 계약 상태(contract_type): active 상태 고객은 유지율 높고, expired 고객은 대부분 이탈
-- 구독 조합(subscription_label): 복합 구독(both) 고객의 이탈률이 가장 낮고, 단일 또는 미구독(none) 고객은 이탈률 높음
-- 구독 연수(subscription_age_group): 연수가 길수록 churn 감소 → 장기 고객의 충성도 상승
+- 요금(`bill_avg`): 낮을수록 이탈률 상승 → 저요금제 고객의 충성도 낮음
+- 데이터 사용량(`download_avg`, `upload_avg`): 낮을수록 이탈률 높음 → 사용률 낮은 고객은 서비스 몰입도 낮음
+- 서비스 품질(`service_failure_count`, `download_over_limit`): 불만(장애·초과)이 많을수록 `churn` 증가 → 품질 경험이 이탈의 직접 요인
+- 계약 상태(`contract_type`): `active` 상태 고객은 유지율 높고, `expired` 고객은 대부분 이탈
+- 구독 조합(`subscription_label`): 복합 구독(`both`) 고객의 이탈률이 가장 낮고, 단일 또는 미구독(`none`) 고객은 이탈률 높음
+- 구독 연수(`subscription_age_group`): 연수가 길수록 `churn` 감소 → 장기 고객의 충성도 상승
 - 
 특히 **(Active 계약 × 복합 구독 × 장기 이용) 고객이 이탈률이 가장 낮은 핵심 유지 고객군(retention segment) 으로 확인**되었다.
 
