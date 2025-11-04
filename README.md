@@ -1,6 +1,6 @@
 ![header](https://capsule-render.vercel.app/api?type=blur&height=200&color=gradient&text=SKN20-2nd-3TEAM&reversal=false&fontColor=35007f&fontSize=50)
 
-# Team Member
+# <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/main/Animals%20and%20Nature/Lion.webp" alt="Lion" width="25" height="25" /> Team Member
 <table>
   <tr>
     <th>강민지</th>
@@ -30,11 +30,11 @@
 서비스 품질 저하, 요금 불만, 약정 만료 등으로 인해 고객이 서비스를 해지하는 현상을 “Churn(이탈)” 이라고 하며,
 통신사는 이러한 이탈 징후를 조기에 포착하고 대응하는 것이 매우 중요하다.
 
-본 프로젝트는 “어떤 고객이 서비스를 해지할 가능성이 높은가?”라는 문제를 다루며,
+본 프로젝트는 **“어떤 고객이 서비스를 해지할 가능성이 높은가?”** 라는 문제를 다루며,
 고객의 계약 상태, 이용 패턴, 서비스 품질, 요금 수준 등의 데이터를 분석하여
 이탈을 유발하는 주요 요인을 파악하고, ISP의 고객 유지 전략(Retention Strategy) 수립에 필요한 인사이트를 제공하는 것을 목표로 한다.
 ### 1.2. 목표
-- 이탈 고객(Churn=1) 과 유지 고객(Churn=0) 간의 특성 차이 분석
+- 이탈 고객(`Churn=1`) 과 유지 고객(`Churn=0`) 간의 특성 차이 분석
 - 계약 상태(Contract Type), 서비스 이용 연수(Subscription Age), 요금 수준(Bill Avg), 데이터 사용량(Download/Upload), 서비스 품질(Service Failure, Over Limit) 등의 요인이
 이탈에 미치는 영향 파악
 - 통계적 검정 및 시각화를 통해 이탈에 유의미한 변수 도출
@@ -57,11 +57,11 @@
 | `id`                             | 고객 ID                              | int          | 삭제                                          |
 | `bill_avg`                       | 최근 3개월 평균 청구 금액(단위: $)   | float        | 로그 변환(`bill_avg_log`) 수행               |
 | `service_failure_count`          | 최근 3개월 동안 고객센터 신고 건수    | int          | 이상치 탐지 및 분포 확인                     |
-| `download_avg`                   | 최근 3개월 평균 다운로드 사용량(GB)  | float        | 로그 변환(`download_avg_log`) 수행           |
-| `upload_avg`                     | 최근 3개월 평균 업로드 사용량(GB)    | float        | 로그 변환(`upload_avg_log`) 수행             |
+| `download_avg`                   | 최근 3개월 평균 다운로드 사용량(GB)  | float        | 결측치 381행 제거 후, 로그 변환(`download_avg_log`) 수행          |
+| `upload_avg`                     | 최근 3개월 평균 업로드 사용량(GB)    | float        | `download_avg`의 결측 행과 동일 구간에서 결측치 발생 -> 자동 제거 후, 로그 변환(`upload_avg_log`) 수행 |
 | `download_over_limit`            | 지난 9개월 동안 다운로드 한도 초과 횟수 | int        | 이상치 탐지 및 분포 확인                     |
-| `remaining_contract`             | 남은 약정 기간(년 단위, null이면 계약 없음) | float   | 파생 컬럼 `contract_type` 생성 후 삭제        |
-| `subscription_age`               | 서비스 이용 기간(년 단위)            | float        | 파생 컬럼 `subscription_age_group` 생성 후 삭제 |
+| `remaining_contract`             | 남은 약정 기간(년 단위, null이면 계약 없음) | float   | 파생 변수 `contract_type` 생성 후 삭제        |
+| `subscription_age`               | 서비스 이용 기간(년 단위)            | float        | -0.02 값 제거 후, 파생 변수 `subscription_age_group` 생성 후 삭제 |
 | `is_tv_subscriber`               | TV 구독 여부 (1=구독, 0=미구독)      | int          | `subscription_label` 통합 후 삭제             |
 | `is_movie_package_subscriber`    | 영화 패키지 구독 여부 (1=구독, 0=미구독) | int       | `subscription_label` 통합 후 삭제             |
 | `churn`                          | 이탈 여부 (1=이탈, 0=유지)           | int          | Target 변수                                  |
@@ -75,26 +75,26 @@
 
 본 프로젝트에서는 분석 목적과 모델 구조에 따라 데이터를 세 가지 형태로 구분하여 활용하였다.
 
-EDA 및 트리 기반 모델(Decision Tree, Random Forest, XGBoost 등) 에서는
-범주형 변수를 구간화·라벨링한 데이터셋(df_tree) 을 사용하였다.
+**EDA 및 트리 기반 모델**(Decision Tree, Random Forest, XGBoost 등) 에서는
+범주형 변수를 구간화·라벨링한 데이터를 사용하였다.
 트리 계열 모델은 범주형 피처를 직접 처리할 수 있으므로
-contract_type, subscription_age_group, subscription_label을
+`contract_type`, `subscription_age_group`, `subscription_label`을
 라벨 인코딩(Label Encoding) 방식으로 변환하였다.
 
-회귀 및 비트리 기반 모델(Logistic Regression, SVM 등) 에서는
+**회귀 및 비트리 기반 모델**(Logistic Regression, SVM 등) 에서는
 모델이 연속형 입력에 민감하기 때문에,
-subscription_age는 연속형 변수로 유지하고,
-contract_type과 subscription_label은 원-핫 인코딩(one-hot encoding) 하였다.
+`subscription_age`는 연속형 변수로 유지하고,
+`contract_type`과 `subscription_label`은 원-핫 인코딩(one-hot encoding) 하였다.
 
 또한, 모델의 안정성과 예측 성능 향상을 위해
-bill_avg, download_avg, upload_avg에 대해 로그 변환(Log Transformation) 을 적용한 버전과
+`bill_avg`, `download_avg`, `upload_avg`에 대해 로그 변환(Log Transformation) 을 적용한 버전과
 변환하지 않은 원본 버전 두 가지를 비교 실험하였다.
 이를 통해 로그 변환이 데이터의 분포 왜곡(skewness) 완화와 모델 성능 개선에 미치는 영향을 검증하였다.
 
 ---
 
 ## 3. EDA
-EDA 결과, 고객의 이탈(Churn)은 요금 수준, 서비스 품질, 계약 상태, 구독 조합, 구독 연수 등에 의해 명확히 구분되는 패턴을 보였다.
+EDA 결과 **고객의 이탈(Churn)**은 **요금, 서비스 품질, 계약 상태, 구독 조합, 구독 연수**에 의해 명확히 구분되는 패턴을 보였다.
 
 - 요금(bill_avg): 낮을수록 이탈률 상승 → 저요금제 고객의 충성도 낮음
 - 데이터 사용량(download_avg, upload_avg): 낮을수록 이탈률 높음 → 사용률 낮은 고객은 서비스 몰입도 낮음
