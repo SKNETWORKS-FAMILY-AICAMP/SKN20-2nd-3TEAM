@@ -200,7 +200,9 @@ Baseline 단계에서 성능이 우수했던 **XGBoost, LightGBM, RandomForest**
 - GridSearchCV를 통해 하이퍼파라미터를 최적화한 결과,**과적합이 완화되고 일반화 성능이 향상**된 것을 확인할 수 있었음.
 
 <br>
+
 ## 7. 딥러닝모델 선정 이유 및 적합성
+
 | 선정 이유 | 설명 |
 |---|---|
 | 특징 학습 능력 | 다층 구조를 통해 데이터의 비선형 패턴을 학습 가능 |
@@ -228,14 +230,12 @@ Baseline 단계에서 성능이 우수했던 **XGBoost, LightGBM, RandomForest**
 - `learning_rate_init = 0.001`
 
 
----
-
-## 8. PyTorch MLP
+## 7.2. PyTorch MLP
 
 - sklearn 최적 조건을 PyTorch로 재현하여 일관성 검증
 - Learning rate 변경 실험을 통해 성능 비교 (0.001 / 0.01 / 0.1)
 
-### 8.1. 모델 설정
+### 7.2.1. 모델 설정
 - Layer 구성: `Input → 128 → 64 → 32 → Output`
 - Activation: `ReLU`
 - BatchNorm + Dropout(0.2) + EarlyStopping 적용
@@ -244,10 +244,10 @@ Baseline 단계에서 성능이 우수했던 **XGBoost, LightGBM, RandomForest**
 - Batch size: `32`
 - Epoch: `100`
 
-### 8.2. 결과
+### 7.2.2 결과
 - LR: `0.001 / 0.01 / 0.1` 비교 → **성능 차이 거의 없음**
 - 
-## 39. TensorFlow MLP
+## 7.3 TensorFlow MLP
 
 - 프레임워크 변경 시 성능 일관성 검증
 - Hidden Layer 구조를 다양하게 변경하여 최적 구조 탐색
@@ -259,11 +259,11 @@ Baseline 단계에서 성능이 우수했던 **XGBoost, LightGBM, RandomForest**
   - Batch size: `16`
   - Epoch: `50`
 
-### 9.1. Layer 구조 실험
+### 7.3.1 Layer 구조 실험
 - 다양한 Layer 형태를 실험했으나 성능 차이는 제한적이었으며,  
 - 기본 축소형 구조가 가장 효율적임을 확인.
 
-### 9.2. RandomSearch 최적 하이퍼파라미터 조합
+### 7.3.2. RandomSearch 최적 하이퍼파라미터 조합
 
 - CV: `3`, n_iter: `300`
 
