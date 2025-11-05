@@ -289,3 +289,87 @@ Baseline 단계에서 성능이 우수했던 **XGBoost, LightGBM, RandomForest**
 - 높은 예측 정확도, 빠른 학습 속도, 안정적인 ROC 성능으로 최종 고객 이탈 예측 모델로 선정함.
 
 ## 7. 딥러닝모델 선정 이유 및 적합성
+
+## 2️⃣ 딥러닝모델 선정 이유 및 적합성
+
+### 딥러닝 모델을 선택한 이유
+| 선정 이유 | 설명 |
+|---|---|
+| 특징 학습 능력 | 다층 구조를 통해 데이터의 비선형 패턴을 학습 가능 |
+| ML 모델 검증 | 머신러닝 모델 대비 성능 비교를 통해 데이터 특성 평가 |
+| 프레임워크 경험 | sklearn → PyTorch → TensorFlow 순으로 구현하여 프레임워크별 학습 특성 검증 |
+| 학습 안정화 연구 | BatchNorm, Dropout, EarlyStopping 적용하여 모델 일반화 성능 향상 검증 |
+
+
+| 모델             | F1 Score | ROC-AUC | 요약                                     |
+| -------------- | -------- | ------- | -------------------------------------- |
+| sklearn MLP    | 0.94    | 0.96   | Baseline 확보                            |
+| PyTorch MLP    | 0.94    | 0.96   | BatchNorm + Dropout + EarlyStopping 적용 |
+| TensorFlow MLP | 0.94    | 0.96   | 구조 변경 시도해도 안정적 성능 유지                   |
+
+## 1. Baseline: sklearn MLPClassifier
+
+- 빠르게 기준 성능 확보, 하이퍼파라미터 최적 성능 확인
+- GridSearchCV로 최적 하이퍼파라미터 탐색  
+  - Hidden layer size: `(128-64-32)`, `(64-32)`, `(64-32-16)`
+  - Activation: `ReLU`, `Tanh`
+  - Learning Rate: `0.001`, `0.01`, `0.1`
+
+### ✅ GridSearchCV 결과 (최적 조합)
+- `hidden_layer_sizes = (128, 64, 32)`
+- `activation = 'relu'`
+- `learning_rate_init = 0.001`
+
+
+---
+
+## 2. PyTorch MLP
+
+- sklearn 최적 조건을 PyTorch로 재현하여 일관성 검증
+- Learning rate 변경 실험을 통해 성능 비교 (0.001 / 0.01 / 0.1)
+
+### 📌 모델 설정
+- Layer 구성: `Input → 128 → 64 → 32 → Output`
+- Activation: `ReLU`
+- BatchNorm + Dropout(0.2) + EarlyStopping 적용
+- Loss: `BCEWithLogitsLoss`
+- Optimizer: `Adam`
+- Batch size: `32`
+- Epoch: `100`
+
+### 🔎 결과
+- LR: `0.001 / 0.01 / 0.1` 비교 → **성능 차이 거의 없음**
+- 
+## 3. TensorFlow MLP
+
+- 프레임워크 변경 시 성능 일관성 검증
+- Hidden Layer 구조를 다양하게 변경하여 최적 구조 탐색
+- 주요 구성 및 설정
+  - Activation: `ReLU`(hidden), `Sigmoid`(output)
+  - EarlyStopping 적용
+  - Loss: `BinaryCrossentropy`
+  - Optimizer: `Adam`
+  - Batch size: `16`
+  - Epoch: `50`
+
+### 🔧 Layer 구조 실험
+> 다양한 Layer 형태를 실험했으나 성능 차이는 제한적이었으며,  
+> 기본 축소형 구조가 가장 효율적임을 확인.
+
+### ✅ RandomSearch 최적 하이퍼파라미터 조합
+
+- CV: `3`, n_iter: `300`
+
+**Best Params**
+- Optimizer: `Adam`
+- Layers: `[128, 64, 32]`
+- Activation: `Tanh`
+- Epoch: `30`
+- Learning Rate: `0.001`
+- Batch Size: `64`
+
+✅ 결론
+- 최적화 기법(RandomSearch 포함)을 적용하더라도 기저 성능이 일정 수준 이상이면 성능 개선 폭이 크지 않음을 확인함. 
+- 이 문제 설정에서는 복잡한 모델 설계나 고도화된 튜닝보다는, 데이터 전처리와 피처 품질이 성능에 더 큰 영향을 미친다는 점을 확인하였음. 
+- MLP 구조를 다양한 프레임워크와 최적화 방법으로 적용하였으나, 성능 변동은 미미했으며 이는 본 문제에서 모델 복잡도보다 데이터 품질과 전처리 과정이 더 중요한 요인임을 의미함
+
