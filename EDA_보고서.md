@@ -208,7 +208,7 @@
 <img width="450" height="300" alt="{DBDA4EC4-8974-4DC7-85CB-7F56AB7F0C6F}" src="https://github.com/user-attachments/assets/54f0add9-977a-4c1e-9d27-e895ac3e5aa4" />
 
 - 서비스 장애 신고 건수가 많아질수록 이탈한 고객이 더 많다.
-- 서비스 장애 신고 건수가 12,16일 떄만 유지 고객이 이탈 고객보다 더 많아 해당 행을 확인하였다. 전체 컬럼 중 공통점을 찾아 필요 열만 추출하였다.<br>
+- 서비스 장애 신고 건수가 12,16일 때만 유지 고객이 이탈 고객보다 더 많아, 해당 행을 확인하였다. 전체 컬럼 중 공통점을 찾아 필요 열만 추출하였다.<br>
 <img width="500" height="200" alt="{ED18B021-09BF-4C89-A1D4-840870D48AE2}" src="https://github.com/user-attachments/assets/32e74ef4-74f2-465f-bf2f-2211f6e11c50" />
 
 - 계약 기간이 남았을 때만(active) 서비스 장애 신고 건수가 많아도 이탈하지 않았다.
