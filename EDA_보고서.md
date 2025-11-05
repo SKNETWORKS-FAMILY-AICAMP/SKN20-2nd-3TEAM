@@ -14,7 +14,7 @@
 <img width="500" height="400" alt="{3B4DED3E-131E-43CA-A9A7-37A8A5652DEF}" src="https://github.com/user-attachments/assets/a6aa782e-fa76-4c93-9bd1-c93862e1f4f0" />
 <img width="500" height="400" alt="{AA78636C-7BF4-461D-9245-B031B9A599B5}" src="https://github.com/user-attachments/assets/de258e3d-cdcf-4d9a-bf6f-09e71179e04b" />
 
-- 전체 고객 중 계약 기간이 남은 고객(active)이이 가장 많고, 그 다음으로 무계약 고객(no_contract), 계약이 만료된 고객(expired) 순으로 나타났다.
+- 전체 고객 중 계약 기간이 남은 고객(active)이 가장 많고, 그 다음으로 무계약 고객(no_contract), 계약이 만료된 고객(expired) 순으로 나타났다.
 
 ### 2.2. 계약 유형별 이탈률
 <img width="500" height="400" alt="{72921B36-50D0-43F7-952F-3C74DC3C9880}" src="https://github.com/user-attachments/assets/09bb7495-7344-42bd-b419-3455ce22d043" />
